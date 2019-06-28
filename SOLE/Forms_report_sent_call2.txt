@@ -12,9 +12,9 @@ Postman-Token: 547761d4-b745-4da6-a3d3-5544a784fbd2
 "Version": "1",
 "Timestamp": "2015-03-17T00:05",
 "Hostname": "Real.Hospital.org",
-"App-name": "SOLE-stream",
+"App-name": "forms_on_fhir",
 "Procid": "1234",
-"Comment": "Forms",
+"Comment": "What type of resource was created",
 "Msg-id": "RID45865",
 "Msg": "Report Sent"
 }
