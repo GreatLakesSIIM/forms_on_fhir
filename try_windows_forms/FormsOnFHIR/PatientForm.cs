@@ -53,10 +53,23 @@ namespace FormsOnFHIR {
           ContactPoint.ContactPointSystem.Phone,
           ContactPoint.ContactPointUse.Mobile,
           patientPhoneEntry.Text));
-
         // create resource
         client.Create(patient);
       }
+    }
+
+    public void Search() {
+      var resource = client.Get("/Patient/");
+      foreach (var child in resource.Children) {
+        if (child.TypeName == "EntryComponent") {
+          foreach (var c in child.Children) {
+            if (c.TypeName == "Patient") {
+
+            }
+          }
+        }
+      }
+      ShowDialog();
     }
 
     private void SubmitPatientInfo_Click(object sender, EventArgs e) {
