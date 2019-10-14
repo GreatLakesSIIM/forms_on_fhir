@@ -21,7 +21,7 @@ namespace FormsOnFHIR {
       var request = new RestRequest(Method.POST);
       request.RequestFormat = DataFormat.Json;
       request.AddJsonBody(raw);
-      IRestResponse response = client.Execute(request);
+      var response = client.Execute(request);
       return response;
     }
 
