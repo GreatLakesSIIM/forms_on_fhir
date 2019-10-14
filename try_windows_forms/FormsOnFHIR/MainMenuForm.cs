@@ -31,7 +31,7 @@ namespace FormsOnFHIR {
       InitializeComponent();
       client = new RestClient("http://hackathon.siim.org/fhir/");
       client.AddDefaultHeader("Content-Type", "application/fhir+json");
-      client.AddDefaultHeader("apikey", "428c400d-5f92-40be-9bf5-f27cc8a3e483");
+      client.AddDefaultHeader("apikey", Environment.GetEnvironmentVariable("SiimApiKey"));
       driver = new MainMenuFormDriver(client);
 
       // make form instances
