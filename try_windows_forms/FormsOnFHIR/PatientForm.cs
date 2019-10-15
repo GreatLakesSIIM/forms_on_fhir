@@ -17,12 +17,8 @@ namespace FormsOnFHIR {
 
     public PatientForm(IFhirClient c) {
       InitializeComponent();
-      client = c;
-    }
-
-    private void PatientForm_Load(object sender, EventArgs e) {
       adminGenderSelector.DataSource = Enum.GetNames(typeof(AdministrativeGender));
-      // TODO: clear entry fields
+      client = c;
     }
 
     public void EnterInfo() {
@@ -69,6 +65,19 @@ namespace FormsOnFHIR {
           }
         }
       }
+      ShowDialog();
+    }
+
+    public void Display(Patient p) {
+      var name = p.Name.Where(it => it.Use == HumanName.NameUse.Official).First();
+      patientFirstNameEntry.Text = name.Given.First();
+      patientMiddleInitialEntry.Text = p.Name.Where(it => it.Use == HumanName.NameUse.Official).First().Given.Last();
+      patientLastNameEntry.Text = name.Family;
+      adminGenderSelector.SelectedItem = Enum.GetName(typeof(AdministrativeGender), p.Gender);
+      patientDOBPicker.Value = p.BirthDateElement.ToDateTimeOffset().Value.DateTime;
+      var deceased = p.Deceased;
+      patientPhoneEntry.Text = p.Telecom.Where(it => it.Use == ContactPoint.ContactPointUse.Home).First().Value;
+      //
       ShowDialog();
     }
 

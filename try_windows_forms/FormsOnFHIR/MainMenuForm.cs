@@ -24,11 +24,17 @@ namespace FormsOnFHIR {
 
     static IRestClient client;
     static IFhirClient fhirClient;
+    static string fhirResourceString;
     static PatientForm patientForm;
     MainMenuFormDriver driver;
 
     public MainMenuForm() {
       InitializeComponent();
+
+      // initialize resource string
+      fhirResourceString = "";
+
+      // set up restful client
       client = new RestClient("http://hackathon.siim.org/fhir/");
       client.AddDefaultHeader("Content-Type", "application/fhir+json");
       client.AddDefaultHeader("apikey", Environment.GetEnvironmentVariable("SiimApiKey"));
@@ -43,12 +49,35 @@ namespace FormsOnFHIR {
     }
 
     private void ChooseSyntheaGeneratedFilesBtn_Click(object sender, EventArgs e) {
-      using (var dialog = new OpenFileDialog() { Filter = "JSON Files (*.json)|*.json" }) {
-        if (dialog.ShowDialog() == DialogResult.OK) {
-          var sr = new StreamReader(dialog.FileName);
-          driver.UploadSyntheaGeneratedData(sr.ReadToEnd());
+      var status = driver.ChooseSyntheaGeneratedDataFile();
+      if (status.IsOk) {
+        fhirResourceString = status.Expect();
+        var parser = new FhirJsonParser();
+        var bundle = parser.Parse<Bundle>(fhirResourceString);
+        foreach (var entryComponent in bundle.Entry) {
+          var resource = entryComponent.Resource;
+          if (resource.ResourceType == ResourceType.Patient) {
+            var p = new Patient();
+            entryComponent.Resource.CopyTo(p);
+            patientForm.Display(p);
+          }
+          Console.WriteLine(resource.TypeName);
+        }
+      } else {
+        var result = MessageBox.Show("Doh! Something went wrong\nWould you like to create a Patient from scratch?", "Doh!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        switch (result) {
+          case DialogResult.Yes:
+            patientForm.EnterInfo();
+            return;
+          default:
+            return;
         }
       }
+    }
+
+    private void CmdUploadFiles_Click(object sender, EventArgs e) {
+      driver.UploadSyntheaGeneratedData(fhirResourceString);
+      fhirResourceString = "";
     }
 
     private void NewPatientToolStripMenuItem_Click(object sender, EventArgs e) {
