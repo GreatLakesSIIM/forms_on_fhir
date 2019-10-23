@@ -49,11 +49,13 @@ namespace FormsOnFHIR {
     }
 
     private void ChooseSyntheaGeneratedFilesBtn_Click(object sender, EventArgs e) {
+      this.Enabled = false;
       var status = driver.ChooseSyntheaGeneratedDataFile();
       if (status.IsOk) {
         fhirResourceString = status.Expect();
         var parser = new FhirJsonParser();
         var bundle = parser.Parse<Bundle>(fhirResourceString);
+        resourceTypeDisplayLabel.Text = bundle.Entry[0].Resource.TypeName;
         foreach (var entryComponent in bundle.Entry) {
           var resource = entryComponent.Resource;
           if (resource.ResourceType == ResourceType.Patient) {
@@ -61,23 +63,31 @@ namespace FormsOnFHIR {
             entryComponent.Resource.CopyTo(p);
             patientForm.Display(p);
           }
-          Console.WriteLine(resource.TypeName);
         }
       } else {
         var result = MessageBox.Show("Doh! Something went wrong\nWould you like to create a Patient from scratch?", "Doh!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
         switch (result) {
           case DialogResult.Yes:
             patientForm.EnterInfo();
-            return;
+            break;
           default:
-            return;
+            break;
         }
       }
+      this.Enabled = true;
     }
 
     private void CmdUploadFiles_Click(object sender, EventArgs e) {
-      driver.UploadSyntheaGeneratedData(fhirResourceString);
+      this.Enabled = false;
+      var response = driver.UploadSyntheaGeneratedData(fhirResourceString);
+      // TODO: indicate success or failure to upload
+      if (response.IsSuccessful) {
+        MessageBox.Show("FHIR Resource Successfully Uploaded!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      } else {
+        MessageBox.Show("Upload failed... :(", ":(", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
       fhirResourceString = "";
+      this.Enabled = true;
     }
 
     private void NewPatientToolStripMenuItem_Click(object sender, EventArgs e) {
