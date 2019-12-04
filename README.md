@@ -8,7 +8,7 @@ attempts at a form interface for generating FHIR resources
 
 ### Generate Data Using [Synthea](https://github.com/synthetichealth/synthea)
 
-![Generate Data](demo/run_synthea_cmd.png)
+![Generate Data](img/run_synthea_cmd.png)
 
 ## references
 * [Synthea](https://synthetichealth.github.io/synthea/) - sythetic patient generation
