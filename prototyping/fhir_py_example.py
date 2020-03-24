@@ -16,7 +16,7 @@ patient_schema = {
     # A contact detail for the individual
     "telecom": [{type: fhir.contactpoint}],
     # male | female | other | unknown
-    "gender": {type: fhir.codesystem.gender},
+    "gender": {type: "<code>"},
     "birthDate": {type: datetime},  # The date of birth for the individual
     # deceased[x]: Indicates if the individual is deceased or not. One of these 2:
     "deceasedbool": {type: bool},
