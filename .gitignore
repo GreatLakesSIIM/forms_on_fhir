@@ -1,0 +1,8 @@
+
+*.json
+temp.html
+try_windows_forms/FormsOnFHIR/.vs/*
+try_windows_forms/FormsOnFHIR/obj/Debug/*
+try_windows_forms/FormsOnFHIR/bin/Debug/*
+try_windows_forms/FormsOnFHIR/packages/*
+*.exe
